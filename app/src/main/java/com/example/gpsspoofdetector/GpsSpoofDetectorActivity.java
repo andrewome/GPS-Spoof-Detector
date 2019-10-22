@@ -4,6 +4,7 @@ import android.Manifest;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -22,15 +23,20 @@ import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
 public class GpsSpoofDetectorActivity extends AppCompatActivity {
-    private long UPDATE_INTERVAL = 2000;  /* 2 secs */
-    private long FASTEST_INTERVAL = 1000; /* 1 sec */
+    private long UPDATE_INTERVAL = 500;  /* 0.5 secs */
+    private long FASTEST_INTERVAL = 500; /* 0.5 secs */
     private FusedLocationProviderClient fusedLocationProviderClient;
+    private TextView locationValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gps_spoof_detector);
+
+        // Start location services
         fusedLocationProviderClient = new FusedLocationProviderClient(this);
+        locationValue = findViewById(R.id.locationValue);
+        locationValue.setText("Fetching GPS Long/Lat Values...");
         GpsSpoofDetectorActivityPermissionsDispatcher.startLocationUpdatesWithPermissionCheck(this);
     }
 
@@ -61,22 +67,30 @@ public class GpsSpoofDetectorActivity extends AppCompatActivity {
         settingsClient.checkLocationSettings(locationSettingsRequest);
 
         // Request updates
-        fusedLocationProviderClient.requestLocationUpdates(mLocationRequest, new LocationCallback() {
-                    @Override
-                    public void onLocationResult(LocationResult locationResult) {
-                        // do work here
+        fusedLocationProviderClient.requestLocationUpdates(
+            mLocationRequest,
+            new LocationCallback() {
+                @Override
+                public void onLocationResult(LocationResult locationResult) {
+                    if (locationResult == null) {
+                        locationValue.setText("Error fetching GPS Long/Lat Values...");
+                        return;
+                    }
+                    for (Location location : locationResult.getLocations()) {
                         onLocationChanged(locationResult.getLastLocation());
                     }
-                },
-                Looper.myLooper()
+                }
+            },
+            Looper.getMainLooper()
         );
     }
 
     public void onLocationChanged(Location location) {
         // New location has now been determined
         String msg = "Updated Location: " +
-                Double.toString(location.getLatitude()) + "," +
+                Double.toString(location.getLatitude()) + ", " +
                 Double.toString(location.getLongitude());
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        locationValue.setText(msg);
     }
 }
