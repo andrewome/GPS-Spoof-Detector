@@ -21,6 +21,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
 
+import java.util.ArrayList;
+
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
@@ -33,6 +35,7 @@ public class GpsSpoofDetectorActivity extends AppCompatActivity {
     private TextView locationValue;
     private Button buttonStartStop;
     private boolean started = false;
+    private ArrayList<Location> locations;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,9 @@ public class GpsSpoofDetectorActivity extends AppCompatActivity {
         buttonStartStop.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (!started) {
+                    // Reset locations arraylist
+                    locations = new ArrayList<>();
+
                     // Start location services
                     buttonStartStop.setText("Stop Detection");
                     locationValue.setText("Fetching GPS Long/Lat Values...");
@@ -120,5 +126,6 @@ public class GpsSpoofDetectorActivity extends AppCompatActivity {
         String msg = "Updated Location:\n" + location.toString();
         Toast.makeText(this, "Updated Location!", Toast.LENGTH_SHORT).show();
         locationValue.setText(msg);
+        locations.add(location);
     }
 }
