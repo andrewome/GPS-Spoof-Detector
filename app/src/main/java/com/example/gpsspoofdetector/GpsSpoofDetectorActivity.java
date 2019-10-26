@@ -4,6 +4,7 @@ import android.Manifest;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,9 +77,8 @@ public class GpsSpoofDetectorActivity extends AppCompatActivity {
                         locationValue.setText("Error fetching GPS Long/Lat Values...");
                         return;
                     }
-                    for (Location location : locationResult.getLocations()) {
-                        onLocationChanged(locationResult.getLastLocation());
-                    }
+                    Log.d("Location fetching", "Number of locations fetched: " + locationResult.getLocations().size());
+                    onLocationChanged(locationResult.getLastLocation());
                 }
             },
             Looper.getMainLooper()
@@ -87,10 +87,8 @@ public class GpsSpoofDetectorActivity extends AppCompatActivity {
 
     public void onLocationChanged(Location location) {
         // New location has now been determined
-        String msg = "Updated Location: " +
-                Double.toString(location.getLatitude()) + ", " +
-                Double.toString(location.getLongitude());
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        String msg = "Updated Location:\n" + location.toString();
+        Toast.makeText(this, "Updated Location!", Toast.LENGTH_SHORT).show();
         locationValue.setText(msg);
     }
 }
