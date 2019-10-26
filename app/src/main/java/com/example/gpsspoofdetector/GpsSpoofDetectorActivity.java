@@ -5,6 +5,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,18 +29,43 @@ public class GpsSpoofDetectorActivity extends AppCompatActivity {
     private long UPDATE_INTERVAL = 500;  /* 0.5 secs */
     private long FASTEST_INTERVAL = 500; /* 0.5 secs */
     private FusedLocationProviderClient fusedLocationProviderClient;
+    private LocationCallback locationCallBack;
     private TextView locationValue;
+    private Button buttonStartStop;
+    private boolean started = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.gps_spoof_detector);
-
-        // Start location services
+        setContentView(R.layout.gps_spoof_detector_activity);
         fusedLocationProviderClient = new FusedLocationProviderClient(this);
         locationValue = findViewById(R.id.locationValue);
-        locationValue.setText("Fetching GPS Long/Lat Values...");
-        GpsSpoofDetectorActivityPermissionsDispatcher.startLocationUpdatesWithPermissionCheck(this);
+
+        // Get start button
+        buttonStartStop = findViewById(R.id.buttonStartStop);
+
+        // Add event listener for the start/stop button
+        buttonStartStop.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (!started) {
+                    // Start location services
+                    buttonStartStop.setText("Stop Detection");
+                    locationValue.setText("Fetching GPS Long/Lat Values...");
+                    GpsSpoofDetectorActivityPermissionsDispatcher.startLocationUpdatesWithPermissionCheck(GpsSpoofDetectorActivity.this);
+
+                    // Change start bool to true to indicated started
+                    started = true;
+                } else {
+                    // Stop location services
+                    buttonStartStop.setText("Start Detection");
+                    locationValue.setText("Currently not fetching location data.");
+                    fusedLocationProviderClient.removeLocationUpdates(locationCallBack);
+
+                    // Change start bool to false to indicate not started
+                    started = false;
+                }
+            }
+        });
     }
 
     @Override
@@ -67,20 +94,23 @@ public class GpsSpoofDetectorActivity extends AppCompatActivity {
         SettingsClient settingsClient = LocationServices.getSettingsClient(this);
         settingsClient.checkLocationSettings(locationSettingsRequest);
 
+        // Set location call back
+        locationCallBack = new LocationCallback() {
+            @Override
+            public void onLocationResult(LocationResult locationResult) {
+                if (locationResult == null) {
+                    locationValue.setText("Error fetching GPS Long/Lat Values...");
+                    return;
+                }
+                Log.d("Location fetching", "Number of locations fetched: " + locationResult.getLocations().size());
+                onLocationChanged(locationResult.getLastLocation());
+            }
+        };
+
         // Request updates
         fusedLocationProviderClient.requestLocationUpdates(
             mLocationRequest,
-            new LocationCallback() {
-                @Override
-                public void onLocationResult(LocationResult locationResult) {
-                    if (locationResult == null) {
-                        locationValue.setText("Error fetching GPS Long/Lat Values...");
-                        return;
-                    }
-                    Log.d("Location fetching", "Number of locations fetched: " + locationResult.getLocations().size());
-                    onLocationChanged(locationResult.getLastLocation());
-                }
-            },
+            locationCallBack,
             Looper.getMainLooper()
         );
     }
