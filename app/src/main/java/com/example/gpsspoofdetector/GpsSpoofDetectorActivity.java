@@ -4,6 +4,7 @@ import android.Manifest;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -28,11 +29,13 @@ import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
 public class GpsSpoofDetectorActivity extends AppCompatActivity {
-    private long UPDATE_INTERVAL = 500;  /* 0.5 secs */
-    private long FASTEST_INTERVAL = 500; /* 0.5 secs */
+    private long UPDATE_INTERVAL = 500;  // 0.5 secs
+    private long FASTEST_INTERVAL = 500; // 0.5 secs
     private FusedLocationProviderClient fusedLocationProviderClient;
     private LocationCallback locationCallBack;
-    private TextView locationValue;
+    private TextView informationView;
+    private TextView resultView;
+    private TextView resultTitleView;
     private Button buttonStartStop;
     private boolean started = false;
     private ArrayList<Location> locations;
@@ -42,7 +45,11 @@ public class GpsSpoofDetectorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.gps_spoof_detector_activity);
         fusedLocationProviderClient = new FusedLocationProviderClient(this);
-        locationValue = findViewById(R.id.locationValue);
+        informationView = findViewById(R.id.informationView);
+        resultTitleView = findViewById(R.id.resultTitleView);
+        resultTitleView.setVisibility(View.INVISIBLE);
+        resultView = findViewById(R.id.resultView);
+        resultView.setMovementMethod(new ScrollingMovementMethod());
 
         // Get start button
         buttonStartStop = findViewById(R.id.buttonStartStop);
@@ -54,9 +61,13 @@ public class GpsSpoofDetectorActivity extends AppCompatActivity {
                     // Reset locations arraylist
                     locations = new ArrayList<>();
 
+                    // Reset results textview, make title invisible
+                    resultView.setText("");
+                    resultTitleView.setVisibility(View.INVISIBLE);
+
                     // Start location services
                     buttonStartStop.setText("Stop Collection and Analyse");
-                    locationValue.setText("Fetching Location data...");
+                    informationView.setText("Fetching Location data...");
                     GpsSpoofDetectorActivityPermissionsDispatcher.startLocationUpdatesWithPermissionCheck(GpsSpoofDetectorActivity.this);
 
                     // Change start bool to true to indicated started
@@ -64,21 +75,24 @@ public class GpsSpoofDetectorActivity extends AppCompatActivity {
                 } else {
                     // Stop location services
                     buttonStartStop.setText("Start Detection");
-                    locationValue.setText("Currently not fetching location data.");
+                    informationView.setText("Currently not fetching location data.");
                     fusedLocationProviderClient.removeLocationUpdates(locationCallBack);
 
                     // Change start bool to false to indicate not started
                     started = false;
 
-                    // Analyse results
+                    // Analyse results and add to resultview.
                     LocationAnalyser locationAnalyser = new LocationAnalyser(locations);
                     String results = locationAnalyser.analyseLocations().getResults();
                     Log.d("Results", results);
+                    resultView.setText(results);
+                    resultTitleView.setVisibility(View.VISIBLE);
                 }
             }
         });
     }
 
+    // Method required for permissions library
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -110,7 +124,7 @@ public class GpsSpoofDetectorActivity extends AppCompatActivity {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 if (locationResult == null) {
-                    locationValue.setText("Error fetching GPS Long/Lat Values...");
+                    informationView.setText("Error fetching GPS Long/Lat Values...");
                     return;
                 }
                 Log.d("Location fetching", "Number of locations fetched: " + locationResult.getLocations().size());
@@ -126,11 +140,12 @@ public class GpsSpoofDetectorActivity extends AppCompatActivity {
         );
     }
 
+    // Method to add toast + update info textview on location update
     public void onLocationChanged(Location location) {
         // New location has now been determined
         Toast.makeText(this, "Location updated!", Toast.LENGTH_SHORT).show();
         locations.add(location);
         String msg = locations.size() + " location(s) collected.";
-        locationValue.setText(msg);
+        informationView.setText(msg);
     }
 }

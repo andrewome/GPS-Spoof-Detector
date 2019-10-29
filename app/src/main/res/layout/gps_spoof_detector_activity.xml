@@ -8,17 +8,19 @@
     tools:context=".GpsSpoofDetectorActivity">
 
     <TextView
-        android:id="@+id/locationValue"
-        android:layout_width="324dp"
-        android:layout_height="352dp"
-        android:textSize="18sp"
+        android:id="@+id/informationView"
+        android:layout_width="365dp"
+        android:layout_height="32dp"
+        android:textAlignment="center"
         android:textColor="@color/colorBlack"
+        android:textSize="14sp"
+        app:autoSizeTextType="none"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.494"
+        app:layout_constraintHorizontal_bias="0.565"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.818" />
+        app:layout_constraintVertical_bias="0.241" />
 
     <Button
         android:id="@+id/buttonStartStop"
@@ -33,7 +35,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.174" />
+        app:layout_constraintVertical_bias="0.137" />
 
     <TextView
         android:id="@+id/titleText"
@@ -46,11 +48,49 @@
         android:textAllCaps="true"
         android:textColor="@color/colorBlack"
         android:textSize="24sp"
+        app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.028" />
+
+    <TextView
+        android:id="@+id/resultView"
+        android:layout_width="335dp"
+        android:layout_height="316dp"
+        android:scrollbars="vertical"
+        android:textAlignment="textStart"
+        android:textColor="@color/colorBlack"
+        android:textColorHighlight="@color/colorGrey"
+        android:textSize="18sp"
+        app:autoSizeTextType="none"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/resultTitleView"
+        app:layout_constraintVertical_bias="0.904" />
+
+    <TextView
+        android:id="@+id/resultTitleView"
+        android:layout_width="341dp"
+        android:layout_height="48dp"
+        android:background="#DADADA"
+        android:backgroundTint="#DADADA"
+        android:gravity="center"
+        android:text="RESULTS"
+        android:textAlignment="center"
+        android:textColor="@color/colorBlack"
+        android:textColorHighlight="@color/colorGrey"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:autoSizeTextType="none"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.328" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
