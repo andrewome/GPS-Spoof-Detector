@@ -22,8 +22,8 @@
 
     <Button
         android:id="@+id/buttonStartStop"
-        android:layout_width="181dp"
-        android:layout_height="69dp"
+        android:layout_width="365dp"
+        android:layout_height="64dp"
         android:backgroundTint="#DADADA"
         android:text="Start Detection"
         android:textAlignment="center"

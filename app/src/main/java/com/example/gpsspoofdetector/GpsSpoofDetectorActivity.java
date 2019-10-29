@@ -55,8 +55,8 @@ public class GpsSpoofDetectorActivity extends AppCompatActivity {
                     locations = new ArrayList<>();
 
                     // Start location services
-                    buttonStartStop.setText("Stop Detection");
-                    locationValue.setText("Fetching GPS Long/Lat Values...");
+                    buttonStartStop.setText("Stop Collection and Analyse");
+                    locationValue.setText("Fetching Location data...");
                     GpsSpoofDetectorActivityPermissionsDispatcher.startLocationUpdatesWithPermissionCheck(GpsSpoofDetectorActivity.this);
 
                     // Change start bool to true to indicated started
@@ -69,6 +69,11 @@ public class GpsSpoofDetectorActivity extends AppCompatActivity {
 
                     // Change start bool to false to indicate not started
                     started = false;
+
+                    // Analyse results
+                    LocationAnalyser locationAnalyser = new LocationAnalyser(locations);
+                    String results = locationAnalyser.analyseLocations().getResults();
+                    Log.d("Results", results);
                 }
             }
         });
@@ -123,9 +128,9 @@ public class GpsSpoofDetectorActivity extends AppCompatActivity {
 
     public void onLocationChanged(Location location) {
         // New location has now been determined
-        String msg = "Updated Location:\n" + location.toString();
-        Toast.makeText(this, "Updated Location!", Toast.LENGTH_SHORT).show();
-        locationValue.setText(msg);
+        Toast.makeText(this, "Location updated!", Toast.LENGTH_SHORT).show();
         locations.add(location);
+        String msg = locations.size() + " location(s) collected.";
+        locationValue.setText(msg);
     }
 }
