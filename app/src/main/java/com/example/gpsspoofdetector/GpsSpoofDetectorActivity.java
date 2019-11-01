@@ -143,6 +143,7 @@ public class GpsSpoofDetectorActivity extends AppCompatActivity {
     // Method to add toast + update info textview on location update
     public void onLocationChanged(Location location) {
         // New location has now been determined
+        Log.d("locationUpdate", location.toString());
         Toast.makeText(this, "Location updated!", Toast.LENGTH_SHORT).show();
         locations.add(location);
         String msg = locations.size() + " location(s) collected.";

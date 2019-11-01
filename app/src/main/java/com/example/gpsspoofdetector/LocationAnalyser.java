@@ -28,11 +28,17 @@ public class LocationAnalyser {
         boolean altitudeCheck = checkAltitude();
         results.addCheckResults(Check.ALTITUDE, altitudeCheck);
 
+        boolean altitudeDecimalCheck = checkAltitudeDecimal();
+        results.addCheckResults(Check.ALTITUDE_DECIMAL, altitudeDecimalCheck);
+
         boolean longitudeCheck = checkLongitude();
         results.addCheckResults(Check.LONGITUDE, longitudeCheck);
 
         boolean latitudeCheck = checkLatitude();
         results.addCheckResults(Check.LATITUDE, latitudeCheck);
+
+        boolean isDistanceRealistic = checkDistanceTravelled();
+        results.addCheckResults(Check.DISTANCE_TRAVELLED, isDistanceRealistic);
     }
 
     // This method checks the altitudes of the locations gathered.
@@ -43,7 +49,34 @@ public class LocationAnalyser {
         boolean hasChanged = false;
         for (Location location : locations) {
             double altitude = location.getAltitude();
+            int prevAltitudeNumber = (int) prevAltitude;
+            double  prevAltitudeDecimal = prevAltitude - (double)prevAltitudeNumber;
+            int altitudeNumber = (int) altitude;
+            double  altitudeDecimal = altitude - (double)altitudeNumber;
             if (altitude != prevAltitude) hasChanged = true;
+            if (prevAltitudeDecimal == altitudeDecimal) {
+                hasChanged = false;
+            }
+            prevAltitude = altitude;
+        }
+        return hasChanged;
+    }
+
+    // This method checks the decimal places of the altitudes of the locations gathered.
+    // If the decimal of the altitudes gathered do not change at all, it is a sign
+    // of location spoofing. Returns false if check failed.
+    private boolean checkAltitudeDecimal() {
+        double prevAltitude = locations.get(0).getAltitude();
+        boolean hasChanged = false;
+        for (Location location : locations) {
+            double altitude = location.getAltitude();
+            int prevAltitudeNumber = (int) prevAltitude;
+            double  prevAltitudeDecimal = prevAltitude - (double)prevAltitudeNumber;
+            int altitudeNumber = (int) altitude;
+            double  altitudeDecimal = altitude - (double)altitudeNumber;
+            if (prevAltitudeDecimal != altitudeDecimal) {
+                hasChanged = true;
+            }
             prevAltitude = altitude;
         }
         return hasChanged;
@@ -63,7 +96,7 @@ public class LocationAnalyser {
         return hasChanged;
     }
 
-    // This method checks the longgitude of the locations gathered.
+    // This method checks the longitude of the locations gathered.
     // If the altitudes gathered do not change at all, it is a sign
     // of location spoofing.
     private boolean checkLongitude() {
@@ -75,5 +108,17 @@ public class LocationAnalyser {
             prevLongitude = longitude;
         }
         return hasChanged;
+    }
+
+    // This method checks the distance travelled of the locations gathered.
+    // If the distance travelled is too large (>100m), it is a sign
+    // of location spoofing.
+    private boolean checkDistanceTravelled() {
+        Location prevLocation = locations.get(0);
+        boolean isDistanceRealistic = true;
+        for (Location location : locations) {
+            if (location.distanceTo(prevLocation) > 100) isDistanceRealistic = false;
+        }
+        return isDistanceRealistic;
     }
 }
