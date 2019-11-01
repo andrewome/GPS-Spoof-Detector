@@ -1,6 +1,8 @@
 package com.example.gpsspoofdetector;
 
 import android.Manifest;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
@@ -23,6 +25,8 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.SettingsClient;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
@@ -148,5 +152,25 @@ public class GpsSpoofDetectorActivity extends AppCompatActivity {
         locations.add(location);
         String msg = locations.size() + " location(s) collected.";
         informationView.setText(msg);
+    }
+
+    private void printCountry() {
+        Geocoder geocoder;
+        List<Address> startAddresses = new ArrayList<>();
+        List<Address> endAddresses = new ArrayList<>();
+        geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            startAddresses = geocoder.getFromLocation
+                    (locations.get(0).getLatitude(), locations.get(0).getLongitude(), 1);
+            startAddresses = geocoder.getFromLocation
+                    (locations.get(locations.size()-1).getLatitude(), locations.get(locations.size()-1).getLongitude(), 1);
+        } catch(Exception e) {
+            System.out.println("Exception thrown");
+        }
+        String startCountry = startAddresses.get(0).getCountryName();
+        String endCountry = endAddresses.get(0).getCountryName();
+
+        System.out.println("Start Location: " + startCountry);
+        System.out.println("End Location: " + endCountry);
     }
 }
