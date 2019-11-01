@@ -16,11 +16,10 @@
         android:textSize="14sp"
         app:autoSizeTextType="none"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.565"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.241" />
+        app:layout_constraintTop_toBottomOf="@+id/buttonStartStop"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/buttonStartStop"
@@ -34,13 +33,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.137" />
+        app:layout_constraintTop_toBottomOf="@+id/titleText"
+        app:layout_constraintVertical_bias="0.002" />
 
     <TextView
         android:id="@+id/titleText"
-        android:layout_width="360dp"
-        android:layout_height="49dp"
+        android:layout_width="365dp"
+        android:layout_height="47dp"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="GPS Spoof Detector"
@@ -50,7 +49,7 @@
         android:textSize="24sp"
         app:autoSizeTextType="uniform"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -58,8 +57,8 @@
 
     <TextView
         android:id="@+id/resultView"
-        android:layout_width="335dp"
-        android:layout_height="316dp"
+        android:layout_width="354dp"
+        android:layout_height="386dp"
         android:scrollbars="vertical"
         android:textAlignment="textStart"
         android:textColor="@color/colorBlack"
@@ -68,15 +67,15 @@
         app:autoSizeTextType="none"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.493"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/resultTitleView"
-        app:layout_constraintVertical_bias="0.904" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/resultTitleView"
-        android:layout_width="341dp"
-        android:layout_height="48dp"
+        android:layout_width="361dp"
+        android:layout_height="49dp"
         android:background="#DADADA"
         android:backgroundTint="#DADADA"
         android:gravity="center"
@@ -90,7 +89,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.328" />
+        app:layout_constraintTop_toBottomOf="@+id/informationView"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
