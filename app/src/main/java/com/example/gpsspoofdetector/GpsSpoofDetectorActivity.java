@@ -151,27 +151,22 @@ public class GpsSpoofDetectorActivity extends AppCompatActivity {
         locations.add(location);
         String msg = locations.size() + " location(s) collected.";
         informationView.setText(msg);
-        msg = "Altitude: " + location.getAltitude() + "\nLatitude: " + location.getLatitude() + "\nLongitude: " + location.getLongitude();
+        msg = "Altitude: " + location.getAltitude() + "\nLatitude: " + location.getLatitude()
+            + "\nLongitude: " + location.getLongitude() + "\nCountry: " + getCountry(location);
         resultView.setText(msg);
     }
 
-    private void printCountry() {
+    private String getCountry(Location location) {
         Geocoder geocoder;
-        List<Address> startAddresses = new ArrayList<>();
-        List<Address> endAddresses = new ArrayList<>();
+        List<Address> address = new ArrayList<>();
         geocoder = new Geocoder(this, Locale.getDefault());
         try {
-            startAddresses = geocoder.getFromLocation
-                    (locations.get(0).getLatitude(), locations.get(0).getLongitude(), 1);
-            startAddresses = geocoder.getFromLocation
-                    (locations.get(locations.size()-1).getLatitude(), locations.get(locations.size()-1).getLongitude(), 1);
+            address = geocoder.getFromLocation
+                    (location.getLatitude(), location.getLongitude(), 1);
         } catch(Exception e) {
             System.out.println("Exception thrown");
         }
-        String startCountry = startAddresses.get(0).getCountryName();
-        String endCountry = endAddresses.get(0).getCountryName();
 
-        System.out.println("Start Location: " + startCountry);
-        System.out.println("End Location: " + endCountry);
+        return address.get(0).getCountryName();
     }
 }
